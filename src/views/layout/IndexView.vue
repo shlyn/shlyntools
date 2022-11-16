@@ -16,3 +16,9 @@ import FooterWidget from './FooterWidget.vue'
         </div>
     </div>
 </template>
+<style lang="scss" scoped>
+.layout-wrapper {
+    min-height: 100vh;
+    padding: 2rem;
+}
+</style>

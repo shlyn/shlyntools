@@ -20,6 +20,12 @@ const router = createRouter({
           name: 'home',
           component: () => import("@/views/home/IndexView.vue"),
           meta: {}
+        },
+        {
+          path: '/xen-subgraph',
+          name: 'xenSubgraph',
+          component: () => import("@/views/xen/IndexView.vue"),
+          meta: {}
         }
       ]
     }
