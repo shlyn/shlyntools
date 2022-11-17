@@ -7,18 +7,39 @@ import FooterWidget from './FooterWidget.vue'
 
 <template>
     <div class="layout-wrapper">
-        <div class="layout-header">
+        <header class="header">
             <HeaderWidget />
-        </div>
-        <RouterView />
-        <div class="layout-footer">
+        </header>
+        <main class="main">
+            <RouterView />
+        </main>
+        <footer class="footer">
             <FooterWidget />
-        </div>
+        </footer>
     </div>
 </template>
 <style lang="scss" scoped>
 .layout-wrapper {
-    min-height: 100vh;
-    padding: 2rem;
+    width: 100%;
+    height: 100%;
+    .header {
+        width: 100%;
+        height: 64px;
+        position: sticky;
+        top: 0;
+        left: auto;
+        right: 0;
+        z-index: 1000;
+        background-color: white;
+    }
+    .main {
+        width: 100%;
+        height: calc(100vh - 140px);
+        padding: 24px;
+    }
+    .footer {
+        width: 100%;
+        height: 76px;
+    }
 }
 </style>
