@@ -4,12 +4,12 @@
     <div class="header-wrapper">
         <div class="left-bar">
             <ul class="menu-list">
-                <li class="menu-item">XEN</li>
+                <li class="menu-item uppercase">Header</li>
             </ul>
         </div>
         <div class="right-bar">
             <ul class="button-list">
-                <li class="button-item">connect</li>
+                <li class="button-item uppercase">connect</li>
             </ul>
         </div>
     </div>
@@ -22,6 +22,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
     .left-bar {
         .menu-list {
             display: flex;
@@ -36,7 +37,6 @@
                 color: rgba(0,0,0,0.6);
                 font-size: 18px;
                 line-height: 1.75;
-                text-transform: uppercase;
                 cursor: pointer;
             }
         }

@@ -11,5 +11,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    border-top: 1px solid rgba(0,0,0,0.1);
 }
 </style>

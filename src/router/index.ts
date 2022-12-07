@@ -13,23 +13,32 @@ const router = createRouter({
     {
       path: '/',
       component: Layout,
-      redirect: '/home',
+      redirect: '/index',
       children: [
         {
-          path: '/home',
+          path: '/index',
           name: 'home',
           component: () => import("@/views/home/IndexView.vue"),
           meta: {}
         },
         {
+          path: '/xen-manual-mint',
+          name: 'xenManualMint',
+          component: () => import("@/views/xen-manual-mint/IndexView.vue"),
+          meta: {}
+        },
+        {
           path: '/xen-subgraph',
           name: 'xenSubgraph',
-          component: () => import("@/views/xen/IndexView.vue"),
+          component: () => import("@/views/xen-subgraph/IndexView.vue"),
           meta: {}
         }
       ]
     }
-  ]
+  ],
+  scrollBehavior() {
+    return { top: 0 }
+  }
 })
 
 export default router
