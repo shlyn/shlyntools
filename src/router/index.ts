@@ -22,9 +22,9 @@ const router = createRouter({
           meta: {}
         },
         {
-          path: '/xen-manual-mint',
-          name: 'xenManualMint',
-          component: () => import("@/views/xen-manual-mint/IndexView.vue"),
+          path: '/xen-multi-mint',
+          name: 'xenMultiMint',
+          component: () => import("@/views/xen-multi-mint/IndexView.vue"),
           meta: {}
         },
         {

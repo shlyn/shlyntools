@@ -1,82 +1,21 @@
 <script setup lang="ts">
 import { ref, h, type Component } from 'vue'
-import { RouterView, RouterLink } from 'vue-router'
+import { RouterView } from 'vue-router'
+import { menuOptions } from '@/config/app.config'
 import { NConfigProvider, NSpace, darkTheme, NLayout, NLayoutSider, NMenu, NIcon } from 'naive-ui'
-import type { GlobalThemeOverrides, MenuOption } from 'naive-ui'
+import type { GlobalThemeOverrides } from 'naive-ui'
 import HeaderWidget from './HeaderWidget.vue'
 import FooterWidget from './FooterWidget.vue'
-import {
-    BookOutline as BookIcon,
-    PersonOutline as PersonIcon,
-    WineOutline as WineIcon,
-    HomeOutline as HomeIcon
-} from '@vicons/ionicons5'
 
 const collapsed = ref(true)
 const activeKey = ref<string | null>(null)
 
 const themeOverrides: GlobalThemeOverrides = {
-    Button: {
-        textColor: 'red'
-    }
+    Button: {}
 }
 
 // const appTheme = darkTheme
 const appTheme = undefined
-console.log(darkTheme)
-
-const renderIcon = (icon: Component) => {
-    return () => h(NIcon, null, { default: () => h(icon) })
-}
-
-const menuOptions: MenuOption[] = [
-    {
-        label: () => h(
-            RouterLink,
-            {
-                to: {
-                    name: 'home'
-                }
-            },
-            {
-                default: () => "Home"
-            }
-        ),
-        key: 'menu_item_home',
-        icon: renderIcon(HomeIcon)
-    },
-    {
-        label: 'XENCrypto',
-        key: 'menu_item_xen_crypto',
-        icon: renderIcon(BookIcon),
-        children: [
-            {
-                label: () => h(
-                    RouterLink,
-                    {
-                        to: {
-                            name: 'xenManualMint',
-                            // path: '/xen-manual-mint'
-                        }
-                    },
-                    {
-                        default: () => "Manual batch mint"
-                    }
-                ),
-                key: "xen_crypto_manual_batch_mint"
-            }
-        ]
-    },
-    {
-        key: 'divider-1',
-        type: 'divider',
-        props: {
-            style: {
-                marginLeft: '32px'
-            }
-        }
-    }
-]
 </script>
 
 <template>
@@ -116,13 +55,13 @@ const menuOptions: MenuOption[] = [
         left: auto;
         right: 0;
         z-index: 1000;
-        background-color: white;
     }
 
     .main {
         width: 100%;
         height: calc(100vh - 140px);
         padding: 24px;
+        background-color: rgba(250,250,250,0.8);
     }
 
     .footer {

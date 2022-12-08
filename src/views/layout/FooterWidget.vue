@@ -1,6 +1,6 @@
 <template>
     <div class="footer-wrapper">
-        github
+        V0.0.1
     </div>
 </template>
 <style lang="scss" scoped>
