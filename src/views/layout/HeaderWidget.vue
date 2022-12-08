@@ -1,39 +1,127 @@
 <script setup lang="ts">
-import { ref, h, type VNode } from 'vue'
-import { NSelect, NTooltip, type SelectOption } from 'naive-ui'
+import { ref, onMounted, onUnmounted } from 'vue'
+import { NSelect, NButton, NEllipsis, useMessage } from 'naive-ui'
+import { metamaskDetect, walletRequest, listenWalletEvent, removeWalletEvent } from '@/utils/wallet-connect.util'
+import { ConnectInfoStored } from '@/utils/storage.util'
+import type { SelectGroupOption } from 'naive-ui'
 
+const message = useMessage()
 const chainId = ref(null)
-
-const renderOption = ({ node, option }: { node: VNode; option: SelectOption }) => h(
-    NTooltip,
+const networkOptions = ref<SelectGroupOption[]>([
     {
-        style: {
-            width: '150px'
-        }
+        type: 'group',
+        label: 'Mainnet Network',
+        key: 'mainnet_',
+        children: [
+            {
+                label: 'Ethereum',
+                value: 1,
+            },
+            {
+                label: 'Polygon',
+                value: 100,
+                disabled: true
+            },
+            {
+                label: 'BSC',
+                value: 55,
+                disabled: true
+            },
+        ]
     },
     {
-        trigger: () => node,
-        default: () => option.label
-    })
-
-const networkOptions = ref<SelectOption[]>([
-    {
-        label: 'Ethereum-Mainnet',
-        value: 1
-    },
-    {
-        label: 'Goerli-Test',
-        value: 5
-    },
-    {
-        label: 'BSC-Mainnet',
-        value: 55
-    },
-    {
-        label: 'BSC-Test',
-        value: 97
+        type: 'group',
+        label: 'Test Network',
+        key: 'test_',
+        children: [
+            {
+                label: 'Goerli',
+                value: 5
+            },
+            {
+                label: 'BSC-Test',
+                value: 97,
+                disabled: true
+            }
+        ]
     }
 ])
+const connectBtnType = ref<'error' | 'primary'>('error')
+const connectBtnText = ref('Please Connect Wallet')
+
+onMounted(async () => {
+    await init()
+})
+
+onUnmounted(() => {
+    removeWalletEventListener()
+})
+
+const init = async () => {
+    if (metamaskDetect()) {
+        removeWalletEventListener()
+        try {
+            const accounts = await walletRequest({ method: 'eth_requestAccounts' })
+            connectBtnType.value = 'primary'
+            connectBtnText.value = accounts[0]
+            startWalletEventListen()
+        } catch (err: any) {
+            connectBtnType.value = 'error'
+            connectBtnText.value = 'Please Connect Wallet'
+            message.error(err.message)
+        }
+    }
+}
+
+const handleConnect = async () => {
+    const accounts = await walletRequest({ method: 'eth_requestAccounts' })
+    connectBtnType.value = 'primary'
+    connectBtnText.value = accounts[0]
+    ConnectInfoStored.value = { address: accounts[0], chainId: ''}
+}
+
+const onAccountsChanged = (args: unknown) => {
+    console.log('accouts Changed', args)
+    if (Array.isArray(args)) {
+        if (args.length > 0) {
+            connectBtnType.value = 'primary'
+            connectBtnText.value = args[0]
+            ConnectInfoStored.value = { ...ConnectInfoStored.value, address: args[0] }
+        } else {
+            connectBtnType.value = 'error'
+            connectBtnText.value = 'Please Connect Wallet'
+        }
+    }
+}
+
+const onChainChanged = async (args: unknown) => {
+    console.log('chain Changed', args)
+    if (typeof args == 'string') {
+        const accounts = await walletRequest({ method: 'eth_requestAccounts' })
+        connectBtnType.value = 'primary'
+        connectBtnText.value = accounts[0]
+        ConnectInfoStored.value = { address: accounts[0], chainId: args }
+    }
+}
+
+const onWalletMessage = (args: unknown) => {
+    if (typeof args == 'string') {
+        message.info(args)
+    }
+}
+
+
+const startWalletEventListen = () => {
+    listenWalletEvent('accountsChanged', onAccountsChanged)
+    listenWalletEvent('chainChanged', onChainChanged)
+    listenWalletEvent('message', onWalletMessage)
+}
+
+const removeWalletEventListener = () => {
+    removeWalletEvent('accountsChanged', onAccountsChanged)
+    removeWalletEvent('chainChanged', onChainChanged)
+    removeWalletEvent('message', onWalletMessage)
+}
 </script>
 <template>
     <div class="header-wrapper">
@@ -45,7 +133,12 @@ const networkOptions = ref<SelectOption[]>([
         <div class="right-bar">
             <ul class="button-list">
                 <li class="button-item network">
-                    <NSelect v-model:value="chainId" :options="networkOptions" :render-option="renderOption" />
+                    <NSelect v-model:value="chainId" :options="networkOptions" />
+                </li>
+                <li class="button-item">
+                    <NButton :type="connectBtnType" round ghost @click="handleConnect">
+                        <NEllipsis style="max-width: 80px;">{{ connectBtnText }}</NEllipsis>
+                    </NButton>
                 </li>
             </ul>
         </div>
@@ -87,6 +180,14 @@ const networkOptions = ref<SelectOption[]>([
 
             .network {
                 width: 128px;
+            }
+
+            .button-item {
+                margin-left: 12px;
+
+                &:first-child {
+                    margin-left: 0;
+                }
             }
         }
     }

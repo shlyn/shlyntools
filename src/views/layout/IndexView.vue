@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, h, type Component } from 'vue'
+import { ref } from 'vue'
 import { RouterView } from 'vue-router'
 import { menuOptions } from '@/config/app.config'
-import { NConfigProvider, NSpace, darkTheme, NLayout, NLayoutSider, NMenu, NIcon } from 'naive-ui'
+import { NConfigProvider, darkTheme, NLayout, NLayoutSider, NMenu } from 'naive-ui'
 import type { GlobalThemeOverrides } from 'naive-ui'
 import HeaderWidget from './HeaderWidget.vue'
 import FooterWidget from './FooterWidget.vue'

@@ -10,9 +10,9 @@ interface ImportMetaEnv {
 }
 
 interface ImportMeta {
-    readonly env: ImportMetaEnv
+    readonly env: ImportMetaEnv;
 }
 
 interface Window {
-
+    readonly ethereum: any;
 }
