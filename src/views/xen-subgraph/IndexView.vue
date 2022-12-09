@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import InputWidget from '@/components/InputWidget.vue'
 
 </script>
 
 <template>
     <div class="xen-wrapper">
-        <InputWidget />
+        xen-subgraph
     </div>
 </template>
 

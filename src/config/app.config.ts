@@ -1,7 +1,8 @@
 import { h, type Component } from 'vue'
 import { RouterLink } from 'vue-router'
 import { NIcon } from 'naive-ui'
-import type { MenuOption } from 'naive-ui'
+import type { MenuOption, SelectGroupOption } from 'naive-ui'
+
 // https://ionic.io/ionicons
 import { HomeOutline, CreateOutline, CloseOutline, HammerOutline, GlobeOutline } from '@vicons/ionicons5'
 
@@ -98,6 +99,41 @@ export const menuOptions: MenuOption[] = [
                     }
                 ),
                 key: 'menu-item_contract-tool'
+            }
+        ]
+    }
+]
+
+export const networkOptionList: SelectGroupOption[] = [
+    {
+        type: 'group',
+        label: 'Mainnet Network',
+        key: 'mainnet_',
+        children: [
+            {
+                label: 'Ethereum',
+                value: '0x1',
+            },
+            {
+                label: 'Polygon',
+                value: '0x89',
+                disabled: true
+            },
+            {
+                label: 'BSC-Mainnet',
+                value: '0x38',
+                disabled: true
+            }
+        ]
+    },
+    {
+        type: 'group',
+        label: 'Test Network',
+        key: 'test_',
+        children: [
+            {
+                label: 'Goerli-Test',
+                value: '0x5'
             }
         ]
     }

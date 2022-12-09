@@ -1,47 +1,59 @@
 <script setup lang="ts">
-import { reactive, ref, onMounted } from 'vue'
-import { useMessage, NGradientText, NFormItem, NInputNumber, NButton, NEllipsis } from 'naive-ui'
-import { getMiniProxy, multiMint } from '@/api/rpc/xenFactory.rpc'
+import { reactive, ref, onMounted, watch } from 'vue'
+import { useUserInfoStore } from '@/stores/app'
+import { useMessage, NGradientText, NFormItem, NInputNumber, NButton, NEmpty, NSpace, NTag } from 'naive-ui'
+import MintedItem from '@/components/MintedItem.vue'
+import { userMintIndex, multiMint } from '@/api/rpc/xenFactory.rpc'
+import { getBatchCreate2Address } from '@/utils/contract.util'
 
+const userInfoStore = useUserInfoStore()
 const message = useMessage()
-
-const ellipsisStyle = {
-    maxWidth: '150px'
-}
+const userAddress = ref('')
 
 const mintParams = reactive({
     count: 1,
     term: 1
 })
 
-const mintedList = [
-    {
-        index: 1,
-        address: '0x51f92552b230e7ea3dd4591d4704b5083d1f3c10',
-        unlockTime: '2023/08/01',
-        reward: '20899031',
-        rank: 2267327
-    },
-    {
-        index: 2,
-        address: '0x51f92552b230e7ea3dd4591d4704b5083d1f3c10',
-        unlockTime: '2023/08/01',
-        reward: '20899031',
-        rank: 2267327
-    }
-]
-
-const mintLoading = ref(false)
-
-onMounted(async() => {
-    await getMiniProxy()
+const mintRefer = reactive({
+    globalRank: 0,
+    AMP: '00',
+    EAA: '00'
 })
 
-const handMint = async() => {
+const mintedTotal = ref('0')
+const mintedList = ref<string[]>([])
+const mintLoading = ref(false)
+
+watch(userInfoStore.userInfo, async (val) => {
+    if (val.address !== userAddress.value) {
+        userAddress.value = val.address
+    }
+    await initData()
+}, { deep: true })
+
+onMounted(async () => {
+    // await initData()
+})
+
+const initData = async () => {
+    if (userAddress.value) {
+        try {
+            mintedTotal.value = await userMintIndex(userAddress.value)
+            const deployer = import.meta.env.VITE_ADDRESS_XEN_FACTORY
+            const byteCodeAddress = import.meta.env.VITE_ADDRESS_MINI_PROXY
+            mintedList.value = getBatchCreate2Address(deployer, byteCodeAddress, userAddress.value, Array.from({ length: Number(mintedTotal.value) }, (it, i) => i + 1))
+        } catch (err: any) {
+            message.error(err.message || 'error')
+        }
+    }
+}
+
+const handMint = async () => {
     mintLoading.value = true
     try {
         await multiMint(mintParams.term, mintParams.count)
-    } catch(err: any) {
+    } catch (err: any) {
         message.error(err.message || 'multiMint: error')
     }
     mintLoading.value = false
@@ -51,10 +63,19 @@ const handMint = async() => {
 <template>
     <div class="xen-manual-mint">
         <div class="mint-wrapper">
-            <div class="mint-desc">
+            <div class="mint-title">
                 <NGradientText gradient="linear-gradient(90deg, red 0%, green 50%, blue 100%)">
                     Xen Batch Mint
                 </NGradientText>
+            </div>
+            <div class="mint-refer">
+                <NSpace>
+                    <NTag type="info">Address: {{ userAddress }}</NTag>
+                    <NTag type="primary">Balance: {{ mintRefer.globalRank }}</NTag>
+                    <NTag type="warning">globalRank: {{ mintRefer.globalRank }}</NTag>
+                    <NTag type="warning">AMP: {{ mintRefer.AMP }}</NTag>
+                    <NTag type="warning">EAA: {{ mintRefer.EAA }}</NTag>
+                </NSpace>
             </div>
             <div class="mint-params">
                 <div class="mint-params_term params-item">
@@ -74,44 +95,24 @@ const handMint = async() => {
         </div>
         <div class="minted-wrapper">
             <div class="mint-info-wrapper">
-                Total: {{ mintedList.length }}
+                Total: {{ mintedTotal }}
             </div>
-            <div class="minted-list-wrapper">
-                <ul class="minted-list">
-                    <li class="minted-list_item" v-for="item in mintedList" :key="item.index">
-                        <div class="item-row">
-                            ID:&nbsp;
-                            <NEllipsis :style="ellipsisStyle">
-                                {{ item.index }}
-                            </NEllipsis>
-                        </div>
-                        <div class="item-row">
-                            Address:&nbsp;
-                            <NEllipsis :style="ellipsisStyle">
-                                {{ item.address }}
-                            </NEllipsis>
-                        </div>
-                        <div class="item-row">
-                            Mint Time:&nbsp;
-                            <NEllipsis :style="ellipsisStyle">
-                                111111
-                            </NEllipsis>
-                        </div>
-                        <div class="item-row">
-                            Unlock Time:&nbsp;
-                            <NEllipsis :style="ellipsisStyle">
-                                {{ item.unlockTime }}
-                            </NEllipsis>
-                        </div>
-                        <div class="item-row">
-                            Reward:&nbsp;
-                            <NEllipsis :style="ellipsisStyle">
-                                {{ item.reward }}
-                            </NEllipsis>
-                        </div>
-                    </li>
-                </ul>
-            </div>
+            <template v-if="mintedList.length">
+                <div class="minted-list-wrapper">
+                    <ul class="minted-list">
+                        <li class="minted-list_item" v-for="(item, index) in mintedList" :key="index">
+                            <MintedItem :id="index" :proxy="item" />
+                        </li>
+                    </ul>
+                </div>
+            </template>
+            <template v-else>
+                <NEmpty description="No Data">
+                    <template #extra>
+                        Maybe you should hava a Mint
+                    </template>
+                </NEmpty>
+            </template>
         </div>
     </div>
 </template>
@@ -124,19 +125,25 @@ const handMint = async() => {
 
     .mint-wrapper {
         width: 100%;
-        height: 40%;
+        height: 42%;
         padding: 12px;
         border: 1px solid rgba(0, 0, 0, 0.1);
         box-shadow: $boxShadow1;
         border-radius: $borderRadius1;
+        overflow: hidden;
+        overflow-y: auto;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
 
-        .mint-desc {
+        .mint-title {
             text-align: center;
             font-size: 24px;
+        }
+
+        .mint-refer {
+            margin-top: 12px;
         }
 
         .mint-params {
@@ -164,6 +171,7 @@ const handMint = async() => {
         border: 1px solid rgba(0, 0, 0, 0.1);
         box-shadow: $boxShadow1;
         border-radius: $borderRadius1;
+
         .mint-info-wrapper {
             padding: 12px;
             display: flex;
@@ -185,17 +193,11 @@ const handMint = async() => {
                     box-shadow: $boxShadow1;
                     border-radius: $borderRadius1;
                     cursor: pointer;
-                    // &:nth-child(5n+1) {
-                    //     margin-left: 0;
-                    // }
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+
                     &:hover {
                         border: 1px solid green;
-                    }
-                    .item-row {
-                        margin-top: 4px;
-                        display: flex;
-                        white-space: nowrap;
-                        align-items: center;
                     }
                 }
             }

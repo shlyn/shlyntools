@@ -34,10 +34,11 @@ interface ParamItem {
     gasPrice?: string; // '0x9184e72a000' 10000000000000
     value?: string; // '0x9184e72a' 2441406250
     data?: string; // '0xd46e8dd...'
+    chainId?: string;
 }
 
 interface RequestArguments {
-    method: 'eth_requestAccounts'|'eth_sendTransaction'|'eth_chainId'|'eth_accounts'|'eth_call'|'eth_sign'|'eth_getBalance';
+    method: 'eth_requestAccounts'|'eth_sendTransaction'|'eth_chainId'|'eth_accounts'|'eth_call'|'eth_sign'|'eth_getBalance'|'wallet_switchEthereumChain';
     params?: ParamItem[]|unknown[];
 }
 export const walletRequest = async (args: RequestArguments) => window.ethereum?.request(args)

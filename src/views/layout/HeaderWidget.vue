@@ -1,65 +1,31 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useUserInfoStore } from '@/stores/app'
 import { NSelect, NButton, NEllipsis, useMessage } from 'naive-ui'
-import { metamaskDetect, walletRequest, listenWalletEvent, removeWalletEvent } from '@/utils/wallet-connect.util'
-import { ConnectInfoStored } from '@/utils/storage.util'
 import type { SelectGroupOption } from 'naive-ui'
+import { networkOptionList } from '@/config/app.config'
+import { metamaskDetect, walletRequest, listenWalletEvent, removeWalletEvent } from '@/utils/wallet-connect.util'
 
+const userInfoStore = useUserInfoStore()
 const message = useMessage()
-const chainId = ref(null)
-const networkOptions = ref<SelectGroupOption[]>([
-    {
-        type: 'group',
-        label: 'Mainnet Network',
-        key: 'mainnet_',
-        children: [
-            {
-                label: 'Ethereum',
-                value: 1,
-            },
-            {
-                label: 'Polygon',
-                value: 100,
-                disabled: true
-            },
-            {
-                label: 'BSC',
-                value: 55,
-                disabled: true
-            },
-        ]
-    },
-    {
-        type: 'group',
-        label: 'Test Network',
-        key: 'test_',
-        children: [
-            {
-                label: 'Goerli',
-                value: 5
-            },
-            {
-                label: 'BSC-Test',
-                value: 97,
-                disabled: true
-            }
-        ]
-    }
-])
+
+const chainId = ref('0x1')
+const networkOptions = ref<SelectGroupOption[]>(networkOptionList)
+
 const connectBtnType = ref<'error' | 'primary'>('error')
-const connectBtnText = ref('Please Connect Wallet')
 
 onMounted(async () => {
     await init()
 })
 
 onUnmounted(() => {
+    userInfoStore.clearUserInfo()
     removeWalletEventListener()
 })
 
 const init = async () => {
+    removeWalletEventListener()
     if (metamaskDetect()) {
-        removeWalletEventListener()
         await toConnect()
     }
 }
@@ -69,26 +35,22 @@ const toConnect = async () => {
     try {
         const accounts = await walletRequest({ method: 'eth_requestAccounts' })
         connectBtnType.value = 'primary'
-        connectBtnText.value = accounts[0]
-        const chainId = await walletRequest({ method: 'eth_chainId' })
-        ConnectInfoStored.value = { address: accounts[0], chainId }
+        chainId.value = await walletRequest({ method: 'eth_chainId' })
+        userInfoStore.setUserInfo({ address: accounts[0], chainId: chainId.value })
         startWalletEventListen()
     } catch (err: any) {
         connectBtnType.value = 'error'
-        connectBtnText.value = 'Please Connect Wallet'
-        ConnectInfoStored.clear()
+        userInfoStore.clearUserInfo()
         message.error(err.message)
     }
 }
 
 const onAccountsChanged = (args: unknown) => {
     if (Array.isArray(args) && args.length > 0) {
-        connectBtnType.value = 'primary'
-        connectBtnText.value = args[0]
-        ConnectInfoStored.value = { ...ConnectInfoStored.value, address: args[0] }
+        window.location.reload()
     } else {
         connectBtnType.value = 'error'
-        connectBtnText.value = 'Please Connect Wallet'
+        userInfoStore.clearUserInfo()
     }
 }
 
@@ -102,6 +64,14 @@ const onWalletMessage = (args: unknown) => {
     }
 }
 
+const onSelectUpdate = async (value: string) => {
+    try {
+        await walletRequest({ method: 'wallet_switchEthereumChain', params: [{ chainId: value }] })
+    } catch(err: unknown) {
+        connectBtnType.value = 'error'
+        userInfoStore.clearUserInfo()
+    }
+}
 
 const startWalletEventListen = () => {
     listenWalletEvent('accountsChanged', onAccountsChanged)
@@ -125,11 +95,11 @@ const removeWalletEventListener = () => {
         <div class="right-bar">
             <ul class="button-list">
                 <li class="button-item network">
-                    <NSelect v-model:value="chainId" :options="networkOptions" />
+                    <NSelect v-model:value="chainId" :options="networkOptions" :on-update:value="onSelectUpdate" />
                 </li>
                 <li class="button-item">
                     <NButton :type="connectBtnType" round ghost @click="toConnect">
-                        <NEllipsis style="max-width: 80px;">{{ connectBtnText }}</NEllipsis>
+                        <NEllipsis style="max-width: 120px;">{{ userInfoStore.currentAddress || 'Connect Wallet' }}</NEllipsis>
                     </NButton>
                 </li>
             </ul>

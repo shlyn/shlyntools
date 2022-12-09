@@ -11,6 +11,10 @@ interface ImportMetaEnv {
     readonly VITE_URL_INFURA: string;
     readonly VITE_API_KEY_ETHERESCAN: string;
     readonly VITE_API_KEY_ALCHEMY: string;
+
+    readonly VITE_ADDRESS_XEN: string;
+    readonly VITE_ADDRESS_MINI_PROXY: string;
+    readonly VITE_ADDRESS_XEN_FACTORY: string;
 }
 
 interface ImportMeta {
