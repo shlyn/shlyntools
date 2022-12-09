@@ -100,5 +100,5 @@ export const menuOptions: MenuOption[] = [
                 key: 'menu-item_contract-tool'
             }
         ]
-    },
+    }
 ]

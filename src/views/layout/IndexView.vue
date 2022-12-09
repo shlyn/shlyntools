@@ -2,7 +2,8 @@
 import { ref } from 'vue'
 import { RouterView } from 'vue-router'
 import { menuOptions } from '@/config/app.config'
-import { NConfigProvider, darkTheme, NLayout, NLayoutSider, NMenu } from 'naive-ui'
+// darkTheme
+import { NConfigProvider, NLayout, NLayoutSider, NMenu } from 'naive-ui'
 import type { GlobalThemeOverrides } from 'naive-ui'
 import HeaderWidget from './HeaderWidget.vue'
 import FooterWidget from './FooterWidget.vue'
