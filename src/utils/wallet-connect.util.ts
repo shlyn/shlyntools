@@ -1,3 +1,7 @@
+export const getWalletProvider = () => {
+    return window.ethereum
+}
+
 export const metamaskDetect = () => (typeof window.ethereum !== 'undefined')
 
 export const isConnect = async () => window.ethereum?.isConnected()
@@ -33,7 +37,7 @@ interface ParamItem {
 }
 
 interface RequestArguments {
-    method: 'eth_requestAccounts'|'eth_sendTransaction';
+    method: 'eth_requestAccounts'|'eth_sendTransaction'|'eth_chainId'|'eth_accounts'|'eth_call'|'eth_sign'|'eth_getBalance';
     params?: ParamItem[]|unknown[];
 }
 export const walletRequest = async (args: RequestArguments) => window.ethereum?.request(args)

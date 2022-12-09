@@ -60,48 +60,40 @@ onUnmounted(() => {
 const init = async () => {
     if (metamaskDetect()) {
         removeWalletEventListener()
-        try {
-            const accounts = await walletRequest({ method: 'eth_requestAccounts' })
-            connectBtnType.value = 'primary'
-            connectBtnText.value = accounts[0]
-            startWalletEventListen()
-        } catch (err: any) {
-            connectBtnType.value = 'error'
-            connectBtnText.value = 'Please Connect Wallet'
-            message.error(err.message)
-        }
+        await toConnect()
     }
 }
 
-const handleConnect = async () => {
-    const accounts = await walletRequest({ method: 'eth_requestAccounts' })
-    connectBtnType.value = 'primary'
-    connectBtnText.value = accounts[0]
-    ConnectInfoStored.value = { address: accounts[0], chainId: ''}
-}
-
-const onAccountsChanged = (args: unknown) => {
-    console.log('accouts Changed', args)
-    if (Array.isArray(args)) {
-        if (args.length > 0) {
-            connectBtnType.value = 'primary'
-            connectBtnText.value = args[0]
-            ConnectInfoStored.value = { ...ConnectInfoStored.value, address: args[0] }
-        } else {
-            connectBtnType.value = 'error'
-            connectBtnText.value = 'Please Connect Wallet'
-        }
-    }
-}
-
-const onChainChanged = async (args: unknown) => {
-    console.log('chain Changed', args)
-    if (typeof args == 'string') {
+// Connect wallet
+const toConnect = async () => {
+    try {
         const accounts = await walletRequest({ method: 'eth_requestAccounts' })
         connectBtnType.value = 'primary'
         connectBtnText.value = accounts[0]
-        ConnectInfoStored.value = { address: accounts[0], chainId: args }
+        const chainId = await walletRequest({ method: 'eth_chainId' })
+        ConnectInfoStored.value = { address: accounts[0], chainId }
+        startWalletEventListen()
+    } catch (err: any) {
+        connectBtnType.value = 'error'
+        connectBtnText.value = 'Please Connect Wallet'
+        ConnectInfoStored.clear()
+        message.error(err.message)
     }
+}
+
+const onAccountsChanged = (args: unknown) => {
+    if (Array.isArray(args) && args.length > 0) {
+        connectBtnType.value = 'primary'
+        connectBtnText.value = args[0]
+        ConnectInfoStored.value = { ...ConnectInfoStored.value, address: args[0] }
+    } else {
+        connectBtnType.value = 'error'
+        connectBtnText.value = 'Please Connect Wallet'
+    }
+}
+
+const onChainChanged = async() => {
+    window.location.reload()
 }
 
 const onWalletMessage = (args: unknown) => {
@@ -136,7 +128,7 @@ const removeWalletEventListener = () => {
                     <NSelect v-model:value="chainId" :options="networkOptions" />
                 </li>
                 <li class="button-item">
-                    <NButton :type="connectBtnType" round ghost @click="handleConnect">
+                    <NButton :type="connectBtnType" round ghost @click="toConnect">
                         <NEllipsis style="max-width: 80px;">{{ connectBtnText }}</NEllipsis>
                     </NButton>
                 </li>

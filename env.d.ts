@@ -7,6 +7,10 @@ declare module '*.vue' {
 interface ImportMetaEnv {
     readonly VITE_GRAPHQL_APIURL: string;
     readonly VITE_THEGRAPH_APIKEY: string;
+    readonly VITE_API_KEY_INFURA: string;
+    readonly VITE_URL_INFURA: string;
+    readonly VITE_API_KEY_ETHERESCAN: string;
+    readonly VITE_API_KEY_ALCHEMY: string;
 }
 
 interface ImportMeta {

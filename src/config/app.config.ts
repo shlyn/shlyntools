@@ -1,9 +1,9 @@
 import { h, type Component } from 'vue'
 import { RouterLink } from 'vue-router'
 import { NIcon } from 'naive-ui'
-
 import type { MenuOption } from 'naive-ui'
-import { HomeOutline, BookOutline, PeopleOutline } from '@vicons/ionicons5'
+// https://ionic.io/ionicons
+import { HomeOutline, CreateOutline, CloseOutline, HammerOutline, GlobeOutline } from '@vicons/ionicons5'
 
 const renderIcon = (icon: Component) => {
     return () => h(NIcon, null, { default: () => h(icon) })
@@ -37,7 +37,7 @@ export const menuOptions: MenuOption[] = [
     {
         label: 'XENCrypto',
         key: 'menu-item_xen_crypto',
-        icon: renderIcon(BookOutline),
+        icon: renderIcon(CloseOutline),
         children: [
             {
                 label: () => h(
@@ -52,7 +52,7 @@ export const menuOptions: MenuOption[] = [
                     }
                 ),
                 key: "xen-multi-mint",
-                icon: renderIcon(PeopleOutline),
+                icon: renderIcon(CreateOutline),
             },
             {
                 label: () => h(
@@ -66,8 +66,39 @@ export const menuOptions: MenuOption[] = [
                         default: () => "XENCrypto subgraph"
                     }
                 ),
-                key: "xen-subgraph"
+                key: "xen-subgraph",
+                icon: renderIcon(GlobeOutline)
             }
         ]
-    }
+    },
+    {
+        key: 'divider-1',
+        type: 'divider',
+        props: {
+            style: {
+                marginLeft: '32px'
+            }
+        }
+    },
+    {
+        label: 'Contract Tool',
+        key: 'menu_item_contract_tool',
+        icon: renderIcon(HammerOutline),
+        children: [
+            {
+                label: () => h(
+                    RouterLink,
+                    {
+                        to: {
+                            path: '/contract-tool'
+                        }
+                    },
+                    {
+                        default: () => "Contract Tool"
+                    }
+                ),
+                key: 'menu-item_contract-tool'
+            }
+        ]
+    },
 ]

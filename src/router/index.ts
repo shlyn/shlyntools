@@ -32,6 +32,12 @@ const router = createRouter({
           name: 'xenSubgraph',
           component: () => import("@/views/xen-subgraph/IndexView.vue"),
           meta: {}
+        },
+        {
+          path: '/contract-tool',
+          name: 'contractTool',
+          component: () => import("@/views/contract-tool/IndexView.vue"),
+          meta: {}
         }
       ]
     }
