@@ -8,6 +8,7 @@ import { getBatchCreate2Address } from '@/utils/contract.util'
 
 const userInfoStore = useUserInfoStore()
 const message = useMessage()
+
 const userAddress = ref('')
 
 const mintParams = reactive({
@@ -24,6 +25,8 @@ const mintRefer = reactive({
 const mintedTotal = ref('0')
 const mintedList = ref<string[]>([])
 const mintLoading = ref(false)
+
+const selectItmes = ref<string[]>([])
 
 watch(userInfoStore.userInfo, async (val) => {
     if (val.address !== userAddress.value) {
@@ -58,6 +61,12 @@ const handMint = async () => {
         message.error(err.message || 'batchMint: error')
     }
     mintLoading.value = false
+}
+
+const handleSelect = (item: string) => {
+    const index = selectItmes.value.findIndex(i => i == item)
+    ~index ? selectItmes.value.splice(index, 1) : selectItmes.value.push(item)
+    console.log(selectItmes.value)
 }
 </script>
 
@@ -101,7 +110,7 @@ const handMint = async () => {
             <template v-if="mintedList.length">
                 <div class="minted-list-wrapper">
                     <ul class="minted-list">
-                        <li class="minted-list_item" v-for="(item, index) in mintedList" :key="index">
+                        <li class="minted-list_item" :class="selectItmes.includes(item) ? 'item__selected' : null" v-for="(item, index) in mintedList" :key="index" @click="handleSelect(item)">
                             <MintedItem :id="index" :proxy="item" />
                         </li>
                     </ul>
@@ -200,6 +209,9 @@ const handMint = async () => {
                     &:hover {
                         border: 1px solid green;
                     }
+                }
+                .item__selected {
+                    border: 1px solid green;
                 }
             }
         }
