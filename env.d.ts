@@ -5,6 +5,8 @@ declare module '*.vue' {
 }
 
 interface ImportMetaEnv {
+    readonly VITE_GASLIMIT_RATIO: string;
+
     readonly VITE_GRAPHQL_APIURL: string;
     readonly VITE_THEGRAPH_APIKEY: string;
     readonly VITE_API_KEY_INFURA: string;
@@ -13,7 +15,7 @@ interface ImportMetaEnv {
     readonly VITE_API_KEY_ALCHEMY: string;
 
     readonly VITE_ADDRESS_XEN: string;
-    readonly VITE_ADDRESS_MINI_PROXY: string;
+    readonly VITE_ADDRESS_XEN_PROXY_IMPLEMENTAION: string;
     readonly VITE_ADDRESS_XEN_FACTORY: string;
 }
 

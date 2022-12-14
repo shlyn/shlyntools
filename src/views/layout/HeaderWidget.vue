@@ -41,7 +41,8 @@ const toConnect = async () => {
     } catch (err: any) {
         connectBtnType.value = 'error'
         userInfoStore.clearUserInfo()
-        message.error(err.message)
+        message.error('Connot connect the wallet.')
+        // message.error(err.message)
     }
 }
 
@@ -111,10 +112,13 @@ const removeWalletEventListener = () => {
     height: 100%;
     padding: 0 24px;
     font-size: 18px;
+    background: #eee;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 9999;
 
     .left-bar {
         .menu-list {

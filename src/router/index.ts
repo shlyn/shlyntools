@@ -22,16 +22,22 @@ const router = createRouter({
           meta: {}
         },
         {
-          path: '/xen-multi-mint',
-          name: 'xenMultiMint',
-          component: () => import("@/views/xen-multi-mint/IndexView.vue"),
-          meta: {}
-        },
-        {
-          path: '/xen-subgraph',
-          name: 'xenSubgraph',
-          component: () => import("@/views/xen-subgraph/IndexView.vue"),
-          meta: {}
+          path: '/xen-crypto',
+          name: 'XENCrypto',
+          children: [
+            {
+              path: '/xen-crypto/batch-mint',
+              name: 'xenBatchMint',
+              component: () => import("@/views/xen-crypto/IndexView.vue"),
+              meta: {}
+            },
+            {
+              path: '/xen-crypto/subgraph',
+              name: 'xenSubgraph',
+              component: () => import("@/views/xen-subgraph/IndexView.vue"),
+              meta: {}
+            },
+          ]
         },
         {
           path: '/contract-tool',

@@ -6,7 +6,6 @@ import { menuOptions } from '@/config/app.config'
 import { NConfigProvider, NLayout, NLayoutSider, NMenu } from 'naive-ui'
 import type { GlobalThemeOverrides } from 'naive-ui'
 import HeaderWidget from './HeaderWidget.vue'
-import FooterWidget from './FooterWidget.vue'
 
 const collapsed = ref(true)
 const activeKey = ref<string | null>(null)
@@ -35,9 +34,6 @@ const appTheme = undefined
                     <main class="main">
                         <RouterView />
                     </main>
-                    <footer class="footer">
-                        <FooterWidget />
-                    </footer>
                 </div>
             </NLayout>
         </NLayout>
@@ -60,7 +56,9 @@ const appTheme = undefined
 
     .main {
         width: 100%;
-        height: calc(100vh - 140px);
+        height: calc(100vh - 64px);
+        overflow: hidden;
+        overflow-y: auto;
         padding: 24px;
         background-color: rgba(250,250,250,0.8);
     }

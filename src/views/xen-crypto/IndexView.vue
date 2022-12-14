@@ -3,7 +3,7 @@ import { reactive, ref, onMounted, watch } from 'vue'
 import { useUserInfoStore } from '@/stores/app'
 import { useMessage, NGradientText, NFormItem, NInputNumber, NButton, NEmpty, NSpace, NTag } from 'naive-ui'
 import MintedItem from '@/components/MintedItem.vue'
-import { userMintIndex, multiMint } from '@/api/rpc/xenFactory.rpc'
+import { userMintIndex, batchMint, batchClaim } from '@/api/rpc/XENFactory.rpc'
 import { getBatchCreate2Address } from '@/utils/contract.util'
 
 const userInfoStore = useUserInfoStore()
@@ -41,7 +41,7 @@ const initData = async () => {
         try {
             mintedTotal.value = await userMintIndex(userAddress.value)
             const deployer = import.meta.env.VITE_ADDRESS_XEN_FACTORY
-            const byteCodeAddress = import.meta.env.VITE_ADDRESS_MINI_PROXY
+            const byteCodeAddress = import.meta.env.VITE_ADDRESS_XEN_PROXY_IMPLEMENTAION
             mintedList.value = getBatchCreate2Address(deployer, byteCodeAddress, userAddress.value, Array.from({ length: Number(mintedTotal.value) }, (it, i) => i + 1))
         } catch (err: any) {
             message.error(err.message || 'error')
@@ -52,9 +52,10 @@ const initData = async () => {
 const handMint = async () => {
     mintLoading.value = true
     try {
-        await multiMint(mintParams.term, mintParams.count)
+        await batchMint(mintParams.term, mintParams.count)
+        await initData()
     } catch (err: any) {
-        message.error(err.message || 'multiMint: error')
+        message.error(err.message || 'batchMint: error')
     }
     mintLoading.value = false
 }
@@ -85,7 +86,7 @@ const handMint = async () => {
                 </div>
                 <div class="mint-params_count params-item">
                     <NFormItem label="Count: " label-placement="left">
-                        <NInputNumber v-model:value="mintParams.count" :min="1" :max="100" />
+                        <NInputNumber v-model:value="mintParams.count" :min="1" :max="130" />
                     </NFormItem>
                 </div>
             </div>

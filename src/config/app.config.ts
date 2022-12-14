@@ -45,14 +45,14 @@ export const menuOptions: MenuOption[] = [
                     RouterLink,
                     {
                         to: {
-                            path: '/xen-multi-mint'
+                            path: '/xen-crypto/batch-mint'
                         }
                     },
                     {
-                        default: () => "Manual batch mint"
+                        default: () => "Batch Mint"
                     }
                 ),
-                key: "xen-multi-mint",
+                key: "xen-crypto-batch-mint",
                 icon: renderIcon(CreateOutline),
             },
             {
@@ -60,14 +60,14 @@ export const menuOptions: MenuOption[] = [
                     RouterLink,
                     {
                         to: {
-                            path: '/xen-subgraph'
+                            path: '/xen-crypto/subgraph'
                         }
                     },
                     {
-                        default: () => "XENCrypto subgraph"
+                        default: () => "Subgraph"
                     }
                 ),
-                key: "xen-subgraph",
+                key: "xen-crypto-subgraph",
                 icon: renderIcon(GlobeOutline)
             }
         ]
