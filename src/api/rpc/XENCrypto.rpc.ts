@@ -5,21 +5,21 @@ import * as artifact from './abis/XENCrypto.json'
 const infura = `${import.meta.env.VITE_URL_INFURA}/${import.meta.env.VITE_API_KEY_INFURA}`
 const contractAddress = import.meta.env.VITE_ADDRESS_XEN
 
-export const getActiveMinters = async() => {
+export const getActiveMinters = async () => {
     const jsonRPCProvider = new providers.JsonRpcProvider(infura)
     const contract = new Contract(contractAddress, artifact.abi, jsonRPCProvider)
     const amount = await contract.activeMinters()
     return amount.toString()
 }
 
-export const getCurrentMaxTerm = async() => {
+export const getCurrentMaxTerm = async () => {
     const jsonRPCProvider = new providers.JsonRpcProvider(infura)
     const contract = new Contract(contractAddress, artifact.abi, jsonRPCProvider)
     const amount = await contract.getCurrentMaxTerm()
     return amount.toString()
 }
 
-export const balanceOf = async(address: string) => {
+export const balanceOf = async (address: string) => {
     const jsonRPCProvider = new providers.JsonRpcProvider(infura)
     const contract = new Contract(contractAddress, artifact.abi, jsonRPCProvider)
     return await contract.balanceOf(address)
@@ -36,7 +36,7 @@ export const balanceOf = async(address: string) => {
  *  eaaRate: BigNumber
  * }
  */
-export const getUserMints = async(address: string) => {
+export const getUserMints = async (address: string) => {
     const jsonRPCProvider = new providers.JsonRpcProvider(infura)
     const contract = new Contract(contractAddress, artifact.abi, jsonRPCProvider)
     const minted = await contract.userMints(address)

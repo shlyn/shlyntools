@@ -9,7 +9,7 @@ onMounted(async () => {
 </script>
 <template>
     <div class="home-wrapper">
-        home
+       hello world! 
     </div>
 </template>
 

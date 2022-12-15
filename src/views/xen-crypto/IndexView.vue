@@ -3,7 +3,7 @@ import { reactive, ref, onMounted, watch } from 'vue'
 import { useUserInfoStore } from '@/stores/app'
 import { useMessage, NGradientText, NFormItem, NInputNumber, NButton, NEmpty, NSpace, NTag } from 'naive-ui'
 import MintedItem from '@/components/MintedItem.vue'
-import { userMintIndex, batchMint, batchClaim } from '@/api/rpc/XENFactory.rpc'
+import { userMintIndex, batchMint, batchClaim, batchReuseMint, batchClaimAndMint } from '@/api/rpc/XENFactory.rpc'
 import { getBatchCreate2Address } from '@/utils/contract.util'
 
 const userInfoStore = useUserInfoStore()
@@ -26,7 +26,7 @@ const mintedTotal = ref('0')
 const mintedList = ref<string[]>([])
 const mintLoading = ref(false)
 
-const selectItmes = ref<string[]>([])
+const selectedItems = ref<string[]>([])
 
 watch(userInfoStore.userInfo, async (val) => {
     if (val.address !== userAddress.value) {
@@ -64,9 +64,32 @@ const handMint = async () => {
 }
 
 const handleSelect = (item: string) => {
-    const index = selectItmes.value.findIndex(i => i == item)
-    ~index ? selectItmes.value.splice(index, 1) : selectItmes.value.push(item)
-    console.log(selectItmes.value)
+    const index = selectedItems.value.findIndex(i => i == item)
+    ~index ? selectedItems.value.splice(index, 1) : selectedItems.value.push(item)
+}
+
+const handleSelectAll = () => {
+    if (selectedItems.value.length == mintedList.value.length) {
+        selectedItems.value = []
+        return
+    }
+    selectedItems.value = mintedList.value;
+}
+
+const handleClaim = async () => {
+    await batchClaim([1])
+}
+
+const handleReuse = async () => {
+    await batchReuseMint([1], 1)
+}
+
+const handleClaimAndMint = async () => {
+    await batchClaimAndMint([1], 1)
+}
+
+const handleDestroy = () => {
+
 }
 </script>
 
@@ -104,13 +127,30 @@ const handleSelect = (item: string) => {
             </div>
         </div>
         <div class="minted-wrapper">
-            <div class="mint-info-wrapper">
-                Total: {{ mintedTotal }}
+            <div class="minted-wrapper_header">
+                <div class="minted-wrapper_header-item">
+                    Total: {{ mintedTotal }}
+                </div>
+                <div class="minted-wrapper_header-item">
+                    <NButton :disabled="mintedList.length == 0" @click="handleSelectAll">全选</NButton>
+                </div>
+                <div class="minted-wrapper_header-item">
+                    <NButton :disabled="selectedItems.length == 0 || mintedList.length == 0" @click="handleClaim">提取</NButton>
+                </div>
+                <div class="minted-wrapper_header-item">
+                    <NButton :disabled="selectedItems.length == 0 || mintedList.length == 0" @click="handleReuse">复用</NButton>
+                </div>
+                <div class="minted-wrapper_header-item">
+                    <NButton :disabled="selectedItems.length == 0 || mintedList.length == 0" @click="handleClaimAndMint">提取并复用</NButton>
+                </div>
+                <div class="minted-wrapper_header-item">
+                    <NButton :disabled="selectedItems.length == 0 || mintedList.length == 0" @click="handleDestroy">销毁/回收</NButton>
+                </div>
             </div>
             <template v-if="mintedList.length">
                 <div class="minted-list-wrapper">
                     <ul class="minted-list">
-                        <li class="minted-list_item" :class="selectItmes.includes(item) ? 'item__selected' : null" v-for="(item, index) in mintedList" :key="index" @click="handleSelect(item)">
+                        <li class="minted-list_item" :class="selectedItems.includes(item) ? 'item__selected' : null" v-for="(item, index) in mintedList" :key="index" @click="handleSelect(item)">
                             <MintedItem :id="index" :proxy="item" />
                         </li>
                     </ul>
@@ -182,9 +222,13 @@ const handleSelect = (item: string) => {
         box-shadow: $boxShadow1;
         border-radius: $borderRadius1;
 
-        .mint-info-wrapper {
+        .minted-wrapper_header {
             padding: 12px;
             display: flex;
+            align-items: center;
+            &-item {
+                margin-left: 8px;
+            }
         }
 
         .minted-list-wrapper {

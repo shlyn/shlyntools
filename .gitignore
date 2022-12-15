@@ -12,6 +12,7 @@ node_modules
 dist
 dist-ssr
 shlyn-tool
+shlyn-tool.zip
 coverage
 *.local
 

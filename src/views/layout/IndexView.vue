@@ -1,18 +1,23 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { RouterView } from 'vue-router'
+import { ref, watch } from 'vue'
+import { RouterView, useRouter } from 'vue-router'
 import { menuOptions } from '@/config/app.config'
 // darkTheme
 import { NConfigProvider, NLayout, NLayoutSider, NMenu } from 'naive-ui'
 import type { GlobalThemeOverrides } from 'naive-ui'
 import HeaderWidget from './HeaderWidget.vue'
 
-const collapsed = ref(true)
+const router = useRouter()
+const collapsed = ref(false)
 const activeKey = ref<string | null>(null)
 
 const themeOverrides: GlobalThemeOverrides = {
     Button: {}
 }
+
+watch(activeKey, (val: any) => {
+    router.push(val)
+})
 
 // const appTheme = darkTheme
 const appTheme = undefined
@@ -21,7 +26,7 @@ const appTheme = undefined
 <template>
     <NConfigProvider :theme="appTheme" :theme-overrides="themeOverrides">
         <NLayout has-sider>
-            <NLayoutSider bordered collapse-mode="width" :collapsed-width="64" :width="240" :collapsed="collapsed"
+            <NLayoutSider bordered collapse-mode="width" :collapsed-width="64" :collapsed="collapsed"
                 show-trigger @collapse="collapsed = true" @expand="collapsed = false">
                 <NMenu v-model:value="activeKey" :collapsed="collapsed" :collapsed-width="64" :collapsed-icon-size="22"
                     :options="menuOptions" />

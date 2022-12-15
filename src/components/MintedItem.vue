@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
 import { getUserMints } from '@/api/rpc/XENCrypto.rpc'
-import { NEllipsis } from 'naive-ui'
+import { NEllipsis, useMessage } from 'naive-ui'
 
 interface Props {
     id: number;
@@ -17,6 +17,7 @@ interface MintedInfo {
     eaaRate: string;
 }
 
+const message = useMessage()
 const ellipsisStyle = { maxWidth: '150px' }
 const props = defineProps<Props>()
 
@@ -34,7 +35,11 @@ onMounted(async () => {
 })
 
 const init = async () => {
-   mintedInfo.value = await getUserMints(props.proxy)
+    try {
+        mintedInfo.value = await getUserMints(props.proxy)
+    }catch(err: any) {
+        message.error(err.message || 'Failed to get mint-info')
+    }
 }
 </script>
 <template>

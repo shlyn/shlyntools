@@ -4,7 +4,13 @@ import { NIcon } from 'naive-ui'
 import type { MenuOption, SelectGroupOption } from 'naive-ui'
 
 // https://ionic.io/ionicons
-import { HomeOutline, CreateOutline, CloseOutline, HammerOutline, GlobeOutline } from '@vicons/ionicons5'
+import {
+    HomeOutline,
+    CloseOutline,
+    GlobeOutline,
+    ReaderOutline,
+    BuildOutline
+} from '@vicons/ionicons5'
 
 const renderIcon = (icon: Component) => {
     return () => h(NIcon, null, { default: () => h(icon) })
@@ -12,93 +18,44 @@ const renderIcon = (icon: Component) => {
 
 export const menuOptions: MenuOption[] = [
     {
-        label: () => h(
-            RouterLink,
-            {
-                to: {
-                    path: '/'
-                }
-            },
-            {
-                default: () => "Home"
-            }
-        ),
-        key: 'menu-item_home',
+        label: "Home",
+        key: '/home',
         icon: renderIcon(HomeOutline)
     },
     {
         key: 'divider-1',
         type: 'divider',
-        props: {
-            style: {
-                marginLeft: '32px'
-            }
-        }
     },
     {
-        label: 'XENCrypto',
-        key: 'menu-item_xen_crypto',
-        icon: renderIcon(CloseOutline),
+        label: 'Tools',
+        key: '/tools',
+        icon: renderIcon(BuildOutline),
         children: [
             {
-                label: () => h(
-                    RouterLink,
-                    {
-                        to: {
-                            path: '/xen-crypto/batch-mint'
-                        }
-                    },
-                    {
-                        default: () => "Batch Mint"
-                    }
-                ),
-                key: "xen-crypto-batch-mint",
-                icon: renderIcon(CreateOutline),
-            },
-            {
-                label: () => h(
-                    RouterLink,
-                    {
-                        to: {
-                            path: '/xen-crypto/subgraph'
-                        }
-                    },
-                    {
-                        default: () => "Subgraph"
-                    }
-                ),
-                key: "xen-crypto-subgraph",
-                icon: renderIcon(GlobeOutline)
+                label: 'Contract Deploy',
+                key: '/tools/contract-deploy',
+                icon: renderIcon(ReaderOutline)
             }
         ]
     },
     {
-        key: 'divider-1',
-        type: 'divider',
-        props: {
-            style: {
-                marginLeft: '32px'
-            }
-        }
+        key: 'divider-2',
+        type: 'divider'
     },
     {
-        label: 'Contract Tool',
-        key: 'menu_item_contract_tool',
-        icon: renderIcon(HammerOutline),
+        label: 'XENCrypto',
+        key: '/xen-crypto',
+        icon: renderIcon(CloseOutline),
         children: [
             {
-                label: () => h(
-                    RouterLink,
-                    {
-                        to: {
-                            path: '/contract-tool'
-                        }
-                    },
-                    {
-                        default: () => "Contract Tool"
-                    }
-                ),
-                key: 'menu-item_contract-tool'
+                label: 'Batch Mint',
+                key: '/xen-crypto/batch-mint',
+                icon: renderIcon(ReaderOutline),
+            },
+            {
+                label: 'Subgraph',
+                key: '/xen-crypto/subgraph',
+                icon: renderIcon(GlobeOutline)
             }
         ]
     }

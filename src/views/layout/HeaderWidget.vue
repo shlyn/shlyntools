@@ -90,7 +90,7 @@ const removeWalletEventListener = () => {
     <div class="header-wrapper">
         <div class="left-bar">
             <ul class="menu-list">
-                <li class="menu-item uppercase">Header</li>
+                <li class="menu-item">^_^</li>
             </ul>
         </div>
         <div class="right-bar">
@@ -112,7 +112,7 @@ const removeWalletEventListener = () => {
     height: 100%;
     padding: 0 24px;
     font-size: 18px;
-    background: #eee;
+    background: #fff;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -127,8 +127,8 @@ const removeWalletEventListener = () => {
 
             .menu-item {
                 min-width: 64px;
+                text-align: left;
                 padding: 6px 8px;
-                margin-left: 12px;
                 font-weight: 500;
                 border-radius: 4px;
                 user-select: none;
