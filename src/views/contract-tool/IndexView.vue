@@ -38,14 +38,19 @@ const xenFactory = reactive({
 })
 
 watch(() => userInfoStore.userInfo.address, async() => {
-    createProps.address = userInfoStore.userInfo.address
-    createProps.nonce = await getNonce(createProps.address) || 1
+    await initCreateProps()
 })
 
 onMounted(async () => {
-    createProps.address = userInfoStore.userInfo.address
-    createProps.nonce = await getNonce(createProps.address) || 1
+    await initCreateProps()
 })
+
+const initCreateProps = async () => {
+    createProps.address = userInfoStore.userInfo.address
+    if (createProps.address) {
+        createProps.nonce = await getNonce(createProps.address)
+    }
+}
 
 const handleCalcContractAddress = (type: 1 | 2) => {
     if (type == 1) {

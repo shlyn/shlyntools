@@ -8,7 +8,6 @@ interface UserInfo {
 }
 
 export const useUserInfoStore = defineStore('userInfo', () => {
-  // const count = ref(0)
   const userInfo = reactive<UserInfo>({
     address: '',
     chainId: ''
