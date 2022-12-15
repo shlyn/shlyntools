@@ -1,5 +1,4 @@
 import { h, type Component } from 'vue'
-import { RouterLink } from 'vue-router'
 import { NIcon } from 'naive-ui'
 import type { MenuOption, SelectGroupOption } from 'naive-ui'
 

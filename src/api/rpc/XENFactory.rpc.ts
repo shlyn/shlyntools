@@ -1,4 +1,4 @@
-import { Contract, ethers, providers } from 'ethers'
+import { Contract, providers } from 'ethers'
 import { getWalletProvider } from '@/utils/wallet-connect.util'
 import * as artifact from './abis/XENFactory.json'
 
