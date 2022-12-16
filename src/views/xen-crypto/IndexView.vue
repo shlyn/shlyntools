@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { reactive, ref, onMounted, watch } from 'vue'
+import { reactive, ref, onMounted, watch, defineAsyncComponent } from 'vue'
 import { useUserInfoStore } from '@/stores/app'
+import { useXenFactoryStore } from '@/stores/xen-factory'
 import {
     useMessage,
     NGradientText,
@@ -14,14 +15,16 @@ import {
     NGridItem,
     NSpace
 } from 'naive-ui'
-import MintedItem from '@/components/MintedItem.vue'
-import { getBatchCreate2Address } from '@/utils/contract.util'
 import { getNetworkInfo } from '@/api/rpc/rpc'
 import { getBalance } from '@/api/rpc/chain-node.rpc'
 import { userMintIndex, batchMint, batchClaim, batchReuseMint, batchClaimAndMint } from '@/api/rpc/XENFactory.rpc'
 import { getCurrentAMP, getCurrentMaxTerm, getCurrentEAAR, getGlobalRank } from '@/api/rpc/XENCrypto.rpc'
 
+const MintedItem = defineAsyncComponent(() => import('@/components/MintedItem.vue'))
+
 const userInfoStore = useUserInfoStore()
+const xenFactoryStore = useXenFactoryStore()
+
 const message = useMessage()
 
 const userAddress = ref('--')
@@ -42,10 +45,12 @@ const mintParams = reactive({
 })
 
 const mintedTotal = ref('0')
-const mintedList = ref<string[]>([])
+
+const mintedList = ref<number[]>([])
+
 const mintLoading = ref(false)
 
-const selectedItems = ref<string[]>([])
+const selectedItems = ref<number[]>([])
 
 watch(userInfoStore.userInfo, async (val) => {
     if (val.address !== userAddress.value) {
@@ -70,10 +75,15 @@ const initData = async () => {
             mintDetails.EAA = await getCurrentEAAR()
 
             const networkInfo = getNetworkInfo()
+            xenFactoryStore.setProxyMetaInfo({
+                userAddress: userAddress.value,
+                deployer: networkInfo.contracts.XENFactory,
+                implementationAddress: networkInfo.contracts.XENProxyImplementation
+            })
+
             mintedTotal.value = await userMintIndex(userAddress.value)
-            const deployer = networkInfo.contracts.XENFactory
-            const byteCodeAddress = networkInfo.contracts.XENProxyImplementation
-            mintedList.value = getBatchCreate2Address(deployer, byteCodeAddress, userAddress.value, Array.from({ length: Number(mintedTotal.value) }, (it, i) => i + 1))
+            mintedList.value = Array.from({ length: Number(mintedTotal.value) }, (it, i) => i + 1)
+
         } catch (err: any) {
             message.error(err.message || 'error')
         }
@@ -91,7 +101,7 @@ const handMint = async () => {
     mintLoading.value = false
 }
 
-const handleSelect = (item: string) => {
+const handleSelect = (item: number) => {
     const index = selectedItems.value.findIndex(i => i == item)
     ~index ? selectedItems.value.splice(index, 1) : selectedItems.value.push(item)
 }
@@ -105,20 +115,18 @@ const handleSelectAll = () => {
 }
 
 const handleClaim = async () => {
-    await batchClaim([1])
+    await batchClaim(selectedItems.value)
 }
 
 const handleReuse = async () => {
-    await batchReuseMint([1], 1)
+    await batchReuseMint(selectedItems.value, 1)
 }
 
 const handleClaimAndMint = async () => {
-    await batchClaimAndMint([1], 1)
+    await batchClaimAndMint(selectedItems.value, 1)
 }
 
-const handleDestroy = () => {
-
-}
+const handleDestroy = () => { }
 </script>
 
 <template>
@@ -186,9 +194,14 @@ const handleDestroy = () => {
             <template v-if="mintedList.length">
                 <div class="minted-list-wrapper">
                     <ul class="minted-list">
-                        <li class="minted-list_item" :class="selectedItems.includes(item) ? 'item__selected' : null"
-                            v-for="(item, index) in mintedList" :key="index" @click="handleSelect(item)">
-                            <MintedItem :id="index" :proxy="item" />
+                        <li
+                            class="minted-list_item"
+                            :class="selectedItems.includes(item) ? 'item__selected' : null"
+                            v-for="item in mintedList"
+                            :key="item"
+                            @click="handleSelect(item)"
+                        >
+                            <MintedItem :id="item"/>
                         </li>
                     </ul>
                 </div>

@@ -1,4 +1,4 @@
-import { Contract, providers } from 'ethers'
+import { Contract, ethers, providers } from 'ethers'
 import * as artifact from './abis/XENCrypto.json'
 import { getNetworkInfo } from './rpc'
 
@@ -60,14 +60,28 @@ export const balanceOf = async (address: string) => {
  *  eaaRate: BigNumber
  * }
  */
-export const getUserMints = async (address: string) => {
+export const getUserMintsByAddress = async (address: string) => {
     const contract = getTheContract()
     const minted = await contract.userMints(address)
     return {
         user: minted.user,
-        term: minted.term.toString(),
-        maturityTs: minted.maturityTs.toString(),
-        rank: minted.rank.toString(),
+        term: minted.term.toNumber(),
+        maturityTs: minted.maturityTs.toNumber(),
+        rank: minted.rank.toNumber(),
+        amplifier: minted.amplifier.toString(),
+        eaaRate: minted.eaaRate.toString()
+    }
+}
+
+export const getUserMintsByIndex = async (address: string) => {
+    const contract = getTheContract()
+    const minted = await contract.userMints(address)
+    return {
+        index: 0,
+        user: minted.user,
+        term: minted.term.toNumber(),
+        maturityTs: minted.maturityTs.toNumber(),
+        rank: minted.rank.toNumber(),
         amplifier: minted.amplifier.toString(),
         eaaRate: minted.eaaRate.toString()
     }

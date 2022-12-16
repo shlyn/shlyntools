@@ -1,31 +1,36 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
-import { getUserMints } from '@/api/rpc/XENCrypto.rpc'
-import { NEllipsis, useMessage } from 'naive-ui'
+import { getUserMintsByIndex } from '@/api/rpc/XENCrypto.rpc'
+import { getCreate2ContractAddress } from '@/utils/contract.util'
+import { NEllipsis, useMessage, NForm, NFormItem } from 'naive-ui'
+import { useXenFactoryStore } from '@/stores/xen-factory'
 
 interface Props {
     id: number;
-    proxy: string;
 }
 
 interface MintedInfo {
     user: string;
-    rank: string;
-    term: string;
-    maturityTs: string;
+    rank: number;
+    term: number;
+    maturityTs: number;
     amplifier: string;
     eaaRate: string;
 }
 
+const xenFactoryStore = useXenFactoryStore()
 const message = useMessage()
 const ellipsisStyle = { maxWidth: '150px' }
+
 const props = defineProps<Props>()
+
+const proxy = ref('')
 
 const mintedInfo = ref<MintedInfo>({
     user: '',
-    rank: '',
-    term: '',
-    maturityTs: '',
+    rank: 0,
+    term: 0,
+    maturityTs: 0,
     amplifier: '',
     eaaRate: ''
 })
@@ -36,35 +41,47 @@ onMounted(async () => {
 
 const init = async () => {
     try {
-        mintedInfo.value = await getUserMints(props.proxy)
-    }catch(err: any) {
+        proxy.value = getCreate2ContractAddress(
+            xenFactoryStore.proxyMetaInfo.deployer,
+            xenFactoryStore.proxyMetaInfo.implementationAddress,
+            xenFactoryStore.proxyMetaInfo.userAddress,
+            props.id
+        )
+        mintedInfo.value = await getUserMintsByIndex(proxy.value)
+    } catch (err: any) {
         message.error(err.message || 'Failed to get mint-info')
     }
 }
 </script>
 <template>
-    <div>
-        <div class="item-row">
-            Id:&nbsp;
-            <NEllipsis :style="ellipsisStyle">
-                {{ id + 1 }}
-            </NEllipsis>
-        </div>
-        <div class="item-row">
-            Address:&nbsp;
+    <div class="minted-item">
+        <NFormItem size="small" label="ID" label-placement="left">
+            {{ id }}
+        </NFormItem>
+        <NFormItem size="small" label="Proxy" label-placement="left">
             <NEllipsis :style="ellipsisStyle">
                 {{ proxy }}
             </NEllipsis>
-        </div>
-        <div class="item-row">
-            Rank:&nbsp;
-            <NEllipsis :style="ellipsisStyle">
-                {{ mintedInfo.rank }}
-            </NEllipsis>
-        </div>
+        </NFormItem>
+        <NFormItem size="small" label="Rank" label-placement="left">
+            {{ mintedInfo.rank }}
+        </NFormItem>
+        <NFormItem size="small" label="Term" label-placement="left">
+            {{ mintedInfo.term }}
+        </NFormItem>
+        <NFormItem size="small" label="maturityTs" label-placement="left">
+            {{ mintedInfo.maturityTs }}
+        </NFormItem>
     </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
+.minted-item {
+    width: 100%;
+    height: 100%;
 
+    .n-form-item {
+        height: 32px;
+    }
+}
 </style>

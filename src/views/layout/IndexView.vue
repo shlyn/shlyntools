@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, Suspense, KeepAlive, Transition } from 'vue'
 import { RouterView, useRouter } from 'vue-router'
 import { menuOptions } from '@/config/app.config'
 // darkTheme
@@ -26,8 +26,8 @@ const appTheme = undefined
 <template>
     <NConfigProvider :theme="appTheme" :theme-overrides="themeOverrides">
         <NLayout has-sider>
-            <NLayoutSider bordered collapse-mode="width" :collapsed-width="64" :collapsed="collapsed"
-                show-trigger @collapse="collapsed = true" @expand="collapsed = false">
+            <NLayoutSider bordered collapse-mode="width" :collapsed-width="64" :collapsed="collapsed" show-trigger
+                @collapse="collapsed = true" @expand="collapsed = false">
                 <NMenu v-model:value="activeKey" :collapsed="collapsed" :collapsed-width="64" :collapsed-icon-size="22"
                     :options="menuOptions" />
             </NLayoutSider>
@@ -37,7 +37,20 @@ const appTheme = undefined
                         <HeaderWidget />
                     </header>
                     <main class="main">
-                        <RouterView />
+                        <RouterView v-slot="{ Component }">
+                            <template v-if="Component">
+                                <Transition mode="out-in">
+                                    <KeepAlive>
+                                        <Suspense>
+                                            <component :is="Component" />
+                                            <template #fallback>
+                                                loading...
+                                            </template>
+                                        </Suspense>
+                                    </KeepAlive>
+                                </Transition>
+                            </template>
+                        </RouterView>
                     </main>
                 </div>
             </NLayout>
@@ -65,7 +78,7 @@ const appTheme = undefined
         overflow: hidden;
         overflow-y: auto;
         padding: 24px;
-        background-color: rgba(250,250,250,0.8);
+        background-color: rgba(250, 250, 250, 0.8);
     }
 
     .footer {
