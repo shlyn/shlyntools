@@ -37,12 +37,12 @@ const appTheme = undefined
                         <HeaderWidget />
                     </header>
                     <main class="main">
-                        <RouterView v-slot="{ Component }">
+                        <RouterView v-slot="{ Component, route }">
                             <template v-if="Component">
                                 <Transition mode="out-in">
                                     <KeepAlive>
                                         <Suspense>
-                                            <component :is="Component" />
+                                            <component :is="Component" :key="route.path" />
                                             <template #fallback>
                                                 loading...
                                             </template>

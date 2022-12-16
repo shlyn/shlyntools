@@ -46,7 +46,11 @@ const mintParams = reactive({
 
 const mintedTotal = ref('0')
 
-const mintedList = ref<number[]>([])
+interface MintedListItem {
+    id: number;
+}
+
+const mintedList = ref<MintedListItem[]>([])
 
 const mintLoading = ref(false)
 
@@ -82,7 +86,7 @@ const initData = async () => {
             })
 
             mintedTotal.value = await userMintIndex(userAddress.value)
-            mintedList.value = Array.from({ length: Number(mintedTotal.value) }, (it, i) => i + 1)
+            mintedList.value = Array.from({ length: Number(mintedTotal.value) }, (item, index) => ({ id: index + 1 }))
 
         } catch (err: any) {
             message.error(err.message || 'error')
@@ -111,7 +115,7 @@ const handleSelectAll = () => {
         selectedItems.value = []
         return
     }
-    selectedItems.value = mintedList.value;
+    selectedItems.value = mintedList.value.map(item => item.id);
 }
 
 const handleClaim = async () => {
@@ -196,12 +200,12 @@ const handleDestroy = () => { }
                     <ul class="minted-list">
                         <li
                             class="minted-list_item"
-                            :class="selectedItems.includes(item) ? 'item__selected' : null"
+                            :class="selectedItems.includes(item.id) ? 'item__selected' : null"
                             v-for="item in mintedList"
-                            :key="item"
-                            @click="handleSelect(item)"
+                            :key="item.id"
+                            @click="handleSelect(item.id)"
                         >
-                            <MintedItem :id="item"/>
+                            <MintedItem :id="item.id"/>
                         </li>
                     </ul>
                 </div>

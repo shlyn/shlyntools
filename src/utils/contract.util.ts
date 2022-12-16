@@ -32,3 +32,39 @@ export const getBatchCreate2Address = function (deployer: string, bytecodeAddres
   }
   return proxys
 }
+
+// xen rewards
+export const getOverTimeDays = (ts: number) => {
+  const tsDiff = Date.now() - Number(ts)
+  const dayTs = 86400000
+  if (tsDiff < 0) {
+    return -1
+  }
+  if (tsDiff === 0) {
+    return 0
+  }
+  return tsDiff / dayTs
+}
+
+export const getRewardsPenalty = (maturityTs: number) => {
+  const overTimeDays = getOverTimeDays(maturityTs * 1000)
+  if (overTimeDays <= 0) {
+    return 1
+  } else if (overTimeDays > 7) {
+    return 1 - 0.99
+  } else if (overTimeDays > 6) {
+    return 1 - 0.72
+  } else if (overTimeDays > 5) {
+    return 1 - 0.35
+  } else if (overTimeDays > 4) {
+    return 1 - 0.17
+  } else if (overTimeDays > 3) {
+    return 1 - 0.08
+  } else if (overTimeDays > 2) {
+    return 1 - 0.03
+  } else if (overTimeDays > 1) {
+    return 1 - 0.01
+  } else {
+    return 1
+  }
+}

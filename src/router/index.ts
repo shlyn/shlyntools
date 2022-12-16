@@ -31,7 +31,7 @@ const router = createRouter({
         {
           path: '/tools/contract-deploy',
           name: 'contractTool',
-          component: () => import("@/views/contract-tool/IndexView.vue"),
+          component: () => import("@/views/tools/ContractDeploy.vue"),
           meta: {}
         }
       ]
@@ -44,13 +44,13 @@ const router = createRouter({
         {
           path: '/xen-crypto/batch-mint',
           name: 'xenBatchMint',
-          component: () => import("@/views/xen-crypto/IndexView.vue"),
+          component: () => import("@/views/xen-crypto/XenFactory.vue"),
           meta: {}
         },
         {
           path: '/xen-crypto/subgraph',
           name: 'xenSubgraph',
-          component: () => import("@/views/xen-subgraph/IndexView.vue"),
+          component: () => import("@/views/xen-crypto/XenSubgraph.vue"),
           meta: {}
         }
       ]

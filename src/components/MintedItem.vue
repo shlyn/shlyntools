@@ -4,6 +4,7 @@ import { getUserMintsByIndex } from '@/api/rpc/XENCrypto.rpc'
 import { getCreate2ContractAddress } from '@/utils/contract.util'
 import { NEllipsis, useMessage, NForm, NFormItem } from 'naive-ui'
 import { useXenFactoryStore } from '@/stores/xen-factory'
+import { dateFormatter } from '@/utils/date.util'
 
 interface Props {
     id: number;
@@ -70,7 +71,7 @@ const init = async () => {
             {{ mintedInfo.term }}
         </NFormItem>
         <NFormItem size="small" label="maturityTs" label-placement="left">
-            {{ mintedInfo.maturityTs }}
+            {{ dateFormatter(mintedInfo.maturityTs * 1000) }}
         </NFormItem>
     </div>
 </template>
