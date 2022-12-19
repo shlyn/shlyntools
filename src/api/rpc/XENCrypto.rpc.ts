@@ -1,4 +1,4 @@
-import { Contract, ethers, providers } from 'ethers'
+import { Contract, providers } from 'ethers'
 import * as artifact from './abis/XENCrypto.json'
 import { getNetworkInfo } from './rpc'
 

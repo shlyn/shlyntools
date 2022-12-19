@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { getUserMintsByIndex } from '@/api/rpc/XENCrypto.rpc'
 import { getCreate2ContractAddress } from '@/utils/contract.util'
-import { NEllipsis, useMessage, NForm, NFormItem } from 'naive-ui'
+import { NEllipsis, useMessage, NFormItem } from 'naive-ui'
 import { useXenFactoryStore } from '@/stores/xen-factory'
 import { dateFormatter } from '@/utils/date.util'
 
