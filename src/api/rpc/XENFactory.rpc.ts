@@ -1,6 +1,6 @@
 import { Contract, providers } from 'ethers'
 import { getWalletProvider } from '@/utils/wallet-connect.util'
-import * as artifact from './abis/XENFactory.json'
+import * as artifact from './abis/XENFactoryUpgradeable.json'
 import { getNetworkInfo } from './rpc'
 
 const getReadContract = () => {
@@ -43,10 +43,10 @@ export const userMintIndex = async (address: string) => {
     return amount.toString()
 }
 
-export const setFactory = async (xenProxy: string) => {
+export const setProxyImplementation = async (xenProxy: string) => {
     const { provider, contract } = getWriteContract()
     const signer = await provider.getSigner()
-    const tx = await contract.connect(signer).setFactory(xenProxy)
+    const tx = await contract.connect(signer).setProxyImplementation(xenProxy)
     return tx.wait()
 }
 
@@ -57,7 +57,8 @@ export const transferOwnership = async (newOwner: string) => {
     return tx.wait()
 }
 
-// Mint
+///////////////////////////////////////////////////////
+
 export const batchMint = async (term: number, count: number) => {
     const { provider, contract } = getWriteContract()
     const signer = await provider.getSigner()

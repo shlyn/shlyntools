@@ -16,6 +16,7 @@ export const isConnect = async () => window.ethereum?.isConnected()
  * 4901 chain disconnected
  * 
  * eip-1474: https://eips.ethereum.org/EIPS/eip-1474#error-codes
+ * -32000 Invalid input
  * -32600 Invalid request
  * -32601 method not found
  * -32602 The parameters were invalid

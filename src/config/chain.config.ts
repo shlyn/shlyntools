@@ -41,12 +41,14 @@ const chainList: ChainItem[] = [
         Alchemy: 'https://eth-goerli.g.alchemy.com/v2/',
         contracts: {
             XENCrypto: '0xDd68332Fe8099c0CF3619cB3Bb0D8159EF1eCc93',
-            // upgradeable
-            XENProxyImplementation: '0x02C9ae4fC832154DE4CA402541Cc5F0A867E7C68',
-            XENFactory: '0xA3d29784d8A8CD7e8099115f782942669f7bC314',
+
             // non-upgradeable
             // XENProxyImplementation: '0x21713C1F9c623d42459CaC85745322cA8d601dAd',
             // XENFactory: '0x5c61c59E7D668f418aAeC976FE23Ae6f2455FF80'
+
+            // upgradeable
+            XENProxyImplementation: '0x07bC392D81121a033b0ead854d302F0BB8C441Ce',
+            XENFactory: '0xDfec2d9c03d713f25C88494404510389B17C1BCC',
         }
     },
     {

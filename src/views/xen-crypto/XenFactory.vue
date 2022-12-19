@@ -17,7 +17,13 @@ import {
 } from 'naive-ui'
 import { getNetworkInfo } from '@/api/rpc/rpc'
 import { getBalance } from '@/api/rpc/chain-node.rpc'
-import { userMintIndex, batchMint, batchClaim, batchReuseMint, batchClaimAndMint } from '@/api/rpc/XENFactory.rpc'
+import {
+    userMintIndex,
+    batchMint,
+    batchClaim,
+    batchReuseMint,
+    batchClaimAndMint,
+} from '@/api/rpc/XENFactory.rpc'
 import { getCurrentAMP, getCurrentMaxTerm, getCurrentEAAR, getGlobalRank } from '@/api/rpc/XENCrypto.rpc'
 
 const MintedItem = defineAsyncComponent(() => import('@/components/MintedItem.vue'))
@@ -138,20 +144,20 @@ const handleDestroy = () => { }
         <NGrid x-gap="24" y-gap="18" :cols="2">
             <NGridItem>
                 <div class="grid-item_wrapper">
-                    <NForm label-align="right" label-width="auto" label-placement="left">
-                        <NFormItem label="Address">
+                    <NForm size="small" label-align="left" label-width="auto" label-placement="top">
+                        <NFormItem label="Address:">
                             <NTag type="info">{{ userAddress }}</NTag>
                         </NFormItem>
-                        <NFormItem label="Balance">
+                        <NFormItem label="Balance:">
                             <NTag type="primary">{{ mintDetails.balance }}</NTag>
                         </NFormItem>
-                        <NFormItem label="GlobalRank">
+                        <NFormItem label="GlobalRank:">
                             <NTag type="warning">{{ mintDetails.globalRank }}</NTag>
                         </NFormItem>
-                        <NFormItem label="AMP">
+                        <NFormItem label="AMP:">
                             <NTag type="warning">{{ mintDetails.AMP }}</NTag>
                         </NFormItem>
-                        <NFormItem label="EAA">
+                        <NFormItem label="EAA:">
                             <NTag type="warning">{{ mintDetails.EAA }}</NTag>
                         </NFormItem>
                     </NForm>
@@ -159,19 +165,19 @@ const handleDestroy = () => { }
             </NGridItem>
             <NGridItem>
                 <div class="grid-item_wrapper">
-                    <NForm label-align="right" label-width="auto" label-placement="left">
+                    <NForm size="small" label-align="left" label-width="auto" label-placement="top">
                         <div class="n-form__title">
                             <NGradientText gradient="linear-gradient(90deg, red 0%, green 50%, blue 100%)">
                                 Xen Batch Mint
                             </NGradientText>
                         </div>
-                        <NFormItem label="Term">
+                        <NFormItem label="Term:">
                             <NInputNumber v-model:value="mintParams.term" :min="1" :max="mintDetails.maxTerm" />
                         </NFormItem>
-                        <NFormItem label="Count">
+                        <NFormItem label="Count:">
                             <NInputNumber v-model:value="mintParams.count" :min="1" :max="mintDetails.maxCount" />
                         </NFormItem>
-                        <NFormItem label="Action">
+                        <NFormItem label="Action:">
                             <NButton type="primary" size="large" :loading="mintLoading" @click="handMint">Mint</NButton>
                         </NFormItem>
                     </NForm>
@@ -237,6 +243,9 @@ const handleDestroy = () => { }
             text-align: center;
             margin-bottom: 24px;
             font-size: 24px;
+        }
+        .n-form-item {
+            margin-top: 0px;
         }
     }
 

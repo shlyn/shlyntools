@@ -3,10 +3,10 @@ import { BigNumber, ethers } from 'ethers'
 export const bn2hexStr = (bn: BigNumber) => '0x' + (bn.toString()?.padStart(64, '0') || '0')
 
 export const getCreateContractAddress = (deployer: string, nonce: number) => {
-  if (nonce === 0) {
-    throw "Not support this value nonce == 0"
-  }
-  const contractAddress = "0x".concat(ethers.utils.keccak256(ethers.utils.RLP.encode([deployer, BigNumber.from(nonce).toHexString()])).slice(-40))
+  const contractAddress = ethers.utils.getContractAddress({
+    from: deployer,
+    nonce
+  })
   return ethers.utils.getAddress(contractAddress)
 }
 
@@ -31,6 +31,12 @@ export const getBatchCreate2Address = function (deployer: string, bytecodeAddres
     proxys.push(_calcCreateContractAddress(deployer, salt, bytecode))
   }
   return proxys
+}
+
+export const getMethodId = (methodSignature: string) => {
+  const ms = methodSignature.trim().replace(/\s[a-zA-Z]*/g, '')
+  console.log(ms)
+return ethers.utils.id(ms).slice(0, 10)
 }
 
 // xen rewards
