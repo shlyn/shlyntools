@@ -62,7 +62,7 @@ export const transferOwnership = async (newOwner: string) => {
 export const batchMint = async (term: number, count: number) => {
     const { provider, contract } = getWriteContract()
     const signer = await provider.getSigner()
-    const gasLimit = await contract.connect(signer).estimateGas.batchMint(term, count)
+    const gasLimit = await contract.connect(signer).estimateGas.estimateBatchMint(term, count)
     const tx = await contract.connect(signer).batchMint(term, count, {
         gasLimit: Math.ceil(gasLimit.toNumber() * gaslimitRatio)
     })
@@ -72,7 +72,7 @@ export const batchMint = async (term: number, count: number) => {
 export const batchClaim = async (ids: number[]) => {
     const { provider, contract } = getWriteContract()
     const signer = await provider.getSigner()
-    const gasLimit = await contract.connect(signer).estimateGas.batchClaim(ids)
+    const gasLimit = await contract.connect(signer).estimateGas.estimateBatchClaim(ids)
     const tx = await contract.connect(signer).batchClaim(ids, {
         gasLimit: Math.ceil(gasLimit.toNumber() * gaslimitRatio)
     })
@@ -82,7 +82,7 @@ export const batchClaim = async (ids: number[]) => {
 export const batchReuseMint = async (ids: number[], term: number) => {
     const { provider, contract } = getWriteContract()
     const signer = await provider.getSigner()
-    const gasLimit = await contract.connect(signer).estimateGas.batchReuseMint(ids, term)
+    const gasLimit = await contract.connect(signer).estimateGas.estimateBatchReuseMint(ids, term)
     const tx = await contract.connect(signer).batchReuseMint(ids, term, {
         gasLimit: Math.ceil(gasLimit.toNumber() * gaslimitRatio)
     })
@@ -92,7 +92,7 @@ export const batchReuseMint = async (ids: number[], term: number) => {
 export const batchClaimAndMint = async (ids: number[], term: number) => {
     const { provider, contract } = getWriteContract()
     const signer = await provider.getSigner()
-    const gasLimit = await contract.connect(signer).estimateGas.batchClaimAndMint(ids, term)
+    const gasLimit = await contract.connect(signer).estimateGas.estimateBatchClaimAndMint(ids, term)
     const tx = await contract.connect(signer).batchClaimAndMint(ids, term, {
         gasLimit: Math.ceil(gasLimit.toNumber() * gaslimitRatio)
     })
